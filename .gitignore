@@ -1,0 +1,3 @@
+definition/Dockerfile
+definition/*.json
+clients/.aws-sam
