@@ -1,0 +1,27 @@
+AWSTemplateFormatVersion: 2010-09-09
+Description: Spotify API Mock
+Transform: AWS::Serverless-2016-10-31
+
+Resources:
+  SpotifyMockLambdaLogs:
+    Type: AWS::Logs::LogGroup
+    Properties:
+      LogGroupName: !Sub
+        - '/aws/lambda/${LambdaName}'
+        - { LambdaName: !Ref SpotifyMockLambda }
+      RetentionInDays: 14
+
+  SpotifyMockLambda:
+    Type: AWS::Serverless::Function
+    Properties:
+      Handler: src/handlers/spotify-mock-lambda.handler
+      Runtime: nodejs18.x
+      Architectures:
+        - arm64
+      MemorySize: 128
+      Timeout: 15
+      Description: Spotify Mock API
+      FunctionUrlConfig:
+        AuthType: NONE
+      Policies:
+        - AWSLambdaBasicExecutionRole
