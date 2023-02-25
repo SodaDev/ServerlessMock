@@ -3,6 +3,16 @@ Description: Spotify API Mock
 Transform: AWS::Serverless-2016-10-31
 
 Resources:
+  MockDefinitionBucket:
+    Type: AWS::S3::Bucket
+    Properties:
+      AccessControl: Private
+      PublicAccessBlockConfiguration:
+        BlockPublicAcls: true
+        BlockPublicPolicy: true
+        IgnorePublicAcls: true
+        RestrictPublicBuckets: true
+
   SpotifyMockLambdaLogs:
     Type: AWS::Logs::LogGroup
     Properties:
@@ -14,7 +24,7 @@ Resources:
   SpotifyMockLambda:
     Type: AWS::Serverless::Function
     Properties:
-      Handler: src/handlers/spotify-mock-lambda.handler
+      Handler: src/handlers/spotify-mock-lambda-online.handler
       Runtime: nodejs18.x
       Architectures:
         - arm64
@@ -23,5 +33,10 @@ Resources:
       Description: Spotify Mock API
       FunctionUrlConfig:
         AuthType: NONE
+      Environment:
+        Variables:
+          DEFINITIONS_BUCKET: !Ref MockDefinitionBucket
       Policies:
         - AWSLambdaBasicExecutionRole
+        - S3ReadPolicy:
+            BucketName: !Ref MockDefinitionBucket
